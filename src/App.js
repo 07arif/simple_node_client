@@ -11,12 +11,26 @@ function App() {
 
   }, [])
 
-  const handleAddUser = event =>{
+  const handleAddUser = event => {
     event.preventDefault();
     const name = event.target.name.value;
     const email = event.target.email.value;
-    const user = {name,email};
+    const user = { name, email };
     console.log(user)
+
+    fetch('http://localhost:5000/users', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify(user),
+    })
+      .then(res => res.json())
+      .then(data => {
+          const newUsers = [...users,data];
+          setUsers(newUsers)
+      })
+      .catch(error => console.error(error))
     event.target.reset()
 
   }
@@ -34,7 +48,7 @@ function App() {
       <h2>Users:{users.length}</h2>
       <div>
         {
-          users.map(user => <p  key={user.id} className='border'>Name:{user.name}<br></br> Email:{user.email}</p>)
+          users.map(user => <p key={user.id} className='border'>Name:{user.name}<br></br> Email:{user.email}</p>)
         }
       </div>
     </div>
